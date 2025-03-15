@@ -58,7 +58,8 @@ def send_notification() -> None:
 
     for chat_id, event_name, event_dates in data:
         result = 'С начала события "{0}" прошло {1} '
-        last_date = date.fromisoformat(event_dates[-1])
+        event_dates_list = event_dates.split(',')
+        last_date = date.fromisoformat(event_dates_list[-1])
         difference_date = date.today() - last_date
         days_from = difference_date.days
 
@@ -67,9 +68,19 @@ def send_notification() -> None:
         elif str(days_from)[-1] in '234':
             result += 'дня'
         else:
-            result += 'день'
+            result = result.replace('прошло', 'прошел') + 'день'
 
         bot.send_message(chat_id, result.format(event_name, days_from))
+
+        if len(event_dates_list) > 1:
+            difference_list = []
+            for i in range(len(event_dates_list) - 1):
+                cur_date = date.fromisoformat(event_dates_list[i])
+                after_date = date.fromisoformat(event_dates_list[i + 1])
+                dif = after_date - cur_date
+                difference_list.append(str(dif.days))
+
+            bot.send_message(chat_id, f'Предыдущие успехи\n{' | '.join(difference_list)}')
 
 
 def scheduler():
@@ -80,7 +91,7 @@ def scheduler():
         sleep(1)
 
 
-# Thread(target=scheduler).start()
+Thread(target=scheduler).start()
 
 if __name__ == '__main__':
     bot.polling(none_stop=True)
