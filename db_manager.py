@@ -36,6 +36,20 @@ class DBManager:
         cls.execute(sql, event_name, str(event_dates), chat_id)
 
     @classmethod
+    def update_event_dates(cls, chat_id, event_dates):
+        sql = '''
+        update users set event_dates = ? where chat_id = ?
+        '''
+        cls.execute(sql, str(event_dates), chat_id)
+
+    @classmethod
+    def update_name_event(cls, chat_id, event_name):
+        sql = '''
+        update users set event_name = ? where chat_id = ?
+        '''
+        cls.execute(sql, event_name, chat_id)
+
+    @classmethod
     def delete(cls, chat_id):
         sql = '''
         delete from users where chat_id = ?
