@@ -24,9 +24,8 @@ def mes_handler(message):
     if message.text == "Проёб":
         user_data = db_manager.read(message.chat.id)
         if user_data:
-            user_id, event_name, event_dates = user_data
-
-            db_manager.update(user_id, event_name, join_date(event_dates, date.today()))
+            user_id, event_name, *event_dates = user_data
+            db_manager.update(user_id, event_name, join_date(','.join(event_dates), str(date.today())))
             bot.send_message(message.chat.id, f'Прогресс аннулирован')
 
 
